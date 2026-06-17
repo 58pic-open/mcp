@@ -1,0 +1,18 @@
+{
+  "name": "58pic",
+  "owner": {
+    "name": "千图网 (58pic)",
+    "url": "https://ai.58pic.com/mcp"
+  },
+  "metadata": {
+    "description": "千图 AI 开放平台官方 Claude 插件市场",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "58pic",
+      "source": "./",
+      "description": "千图 AI 开放平台：搜素材、AI 生图/生视频、做同款、按 PID 下载素材。远程 MCP + OAuth 2.1。"
+    }
+  ]
+}

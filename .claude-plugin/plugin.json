@@ -1,0 +1,24 @@
+{
+  "name": "58pic",
+  "description": "千图 AI 开放平台：搜素材、查模型、AI 生图（文生图/图生图/做同款）、生视频、按 PID 下载素材。通过远程 MCP（OAuth 2.1）调用，首次连接浏览器自动授权。",
+  "version": "0.1.0",
+  "author": {
+    "name": "千图网 (58pic)",
+    "url": "https://ai.58pic.com/mcp"
+  },
+  "homepage": "https://ai.58pic.com/mcp",
+  "repository": "https://github.com/58pic-open/mcp",
+  "license": "MIT",
+  "keywords": [
+    "58pic",
+    "qiantu",
+    "千图",
+    "image-search",
+    "ai-image-generation",
+    "text-to-image",
+    "image-to-image",
+    "video-generation",
+    "stock-assets",
+    "mcp"
+  ]
+}
