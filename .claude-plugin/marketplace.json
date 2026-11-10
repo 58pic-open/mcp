@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "千图 AI 开放平台官方 Claude 插件市场",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "plugins": [
     {
       "name": "58pic",
       "source": "./",
-      "description": "千图 AI 开放平台：搜素材、AI 生图/生视频、做同款、按 PID 下载素材。远程 MCP + OAuth 2.1。"
+      "description": "千图 AI 开放平台：搜素材、AI 生图/生视频、做同款、智能设计行业 Agent、MiniApp 风格玩法、按 PID 下载素材。远程 MCP + OAuth 2.1。"
     }
   ]
 }

@@ -1,8 +1,10 @@
 ---
 name: 58pic
 description: >-
-  千图（58pic）AI 开放平台 MCP：搜素材、查模型、生成图片（文生图 / 图生图 / 做同款）、下载素材。
-  在用户提到千图、58pic、生图、文生图、做同款、找素材、找模板、按风格生成、PID、下载素材时使用。
+  千图（58pic）AI 开放平台 MCP：搜素材、查模型、生成图片（文生图 / 图生图 / 做同款）、下载素材，
+  智能设计行业 Agent（电商套图 / 详情页 / 海报 / 品牌 / 社媒 / PPT / 视频）与 MiniApp 风格玩法。
+  在用户提到千图、58pic、生图、文生图、做同款、找素材、找模板、按风格生成、PID、下载素材、
+  智能设计、电商设计、商品套图、主图、详情页、海报设计、品牌设计、风格玩法、MiniApp、一键同款玩法时使用。
   通过 MCP 工具调用（list_models / search_images / generate_image 等）完成，不要尝试执行 shell 命令。
   首次使用会自动弹浏览器走 OAuth 授权，无需用户复制 API Key。
 ---
@@ -22,6 +24,8 @@ description: >-
 - "按这张图的风格再生成一张"、"做同款"
 - "下载这张素材"、"给我这个图的源文件"
 - "查我千图的剩余积分"
+- "帮我做一套电商主图 / 详情页 / 品牌 VI / 小红书图文 / PPT"（→ 智能设计行业 Agent）
+- "用千图的 XX 玩法 / 风格玩法做一个"、"商品套图、批量换背景、产品分解特效"（→ MiniApp）
 
 ## 鉴权状态判断
 
@@ -47,6 +51,13 @@ description: >-
 | `generate_image` | AI 生成图片（含文生图、图生图、做同款） | **是** |
 | `get_generation_status` | 仅在 `generate_image` 因 TIMEOUT 返回 task_id 时用 | 否 |
 | `get_download_info` | 用户要拿素材的原文件下载链 | **是** |
+| `list_design_agents` | 智能设计前选行业 Agent / 子模式 / 参数 | 否 |
+| `generate_smart_design` | 智能设计 Agent 出图（套图、详情页、海报、品牌、PPT…） | **是** |
+| `get_smart_design_result` | `generate_smart_design` 返回 `running` 时轮询 | 否 |
+| `continue_smart_design` | 回答 Agent 追问（`awaiting_user`）/ 改稿 | **是** |
+| `list_miniapps` | 搜风格玩法 / AI 应用 | 否 |
+| `get_miniapp` | 运行前看玩法需要的输入（参考图 / 提示词槽位） | 否 |
+| `run_miniapp` | 运行玩法出同款效果 | **是** |
 
 每个 tool 详细的入参 / 返回字段从 MCP 协议层就能拿到，不在这里重复。
 
@@ -133,6 +144,41 @@ description: >-
 4. 报告扣点
 ```
 
+### 配方 6：智能设计行业 Agent（电商 / 海报 / 品牌 / 社媒 / 办公 / 视频）
+
+```
+用户："帮我给这款保温杯做一套亚马逊主图，卖点是 24 小时保温"
+
+步骤：
+1. 本地图片先 create_upload 拿 URL
+2. list_design_agents({ keyword: "电商" }) → 选 agent_key（如电商设计 Agent）与 second_modes[].name
+3. 按该子模式 params 收集参数：select / multi_select 只能取 options；required 缺失就问用户
+4. generate_smart_design({ agent_key, second_mode, params: { 平台: "亚马逊", 卖点: "24小时保温" },
+     prompt: "保温杯主图套图", reference_image_urls: [<商品图>] })
+5. 按 status 处理：
+   - succeeded → 展示 images
+   - awaiting_user → 把 ask_user.question / options / steps 原样转述给用户（不要替用户选），
+     拿到回答后 continue_smart_design({ session_id, message })；多步骤用「[多步骤选择]\n问题: 选项」
+   - running → 告诉用户"Agent 正在设计"，20~30 秒后 get_smart_design_result({ session_id })，直到终态
+6. 用户要改稿：continue_smart_design({ session_id, message: "背景换成户外露营" })，同会话保留上下文
+```
+
+不确定用哪个 Agent 时省略 `agent_key`（全能 Agent 自选模式）。`running` 时**不要**重新调用 `generate_smart_design`（会重复扣点）。
+
+### 配方 7：MiniApp 风格玩法
+
+```
+用户："用千图的商品套图玩法，把这张图做成一套主图"
+
+步骤：
+1. list_miniapps({ keyword: "套图" }) → 选 miniapp_id（多个候选时列给用户挑）
+2. get_miniapp({ miniapp_id }) → 看 needs_reference_image / prompt_template / guide
+   - needs_reference_image=true 且用户没给图：先要图（本地图 create_upload）
+   - prompt_template 里的 {槽位} 替换成用户内容
+3. run_miniapp({ miniapp_id, reference_image_url, prompt })
+4. 返回 TIMEOUT 时用 get_generation_status({ task_id }) 继续查，不要重跑
+```
+
 ## 省钱原则（重要）
 
 | 场景 | 建议 |
@@ -202,6 +248,8 @@ description: >-
 - ❌ 单次对话内连续生成 5 张以上图片而不问用户
 - ❌ 自动 retry 扣点 tool（INSUFFICIENT_CREDITS、内容审核失败、TIMEOUT 等）
 - ❌ TIMEOUT 后立刻再调 `generate_image`（会重复扣点；要用 `get_generation_status`）
+- ❌ 智能设计 `running` 时再调 `generate_smart_design`（会重复扣点；要用 `get_smart_design_result`）
+- ❌ 替用户回答 Agent 的追问（`ask_user`），应原样转述让用户选
 - ❌ 把 MCP 返回的原始 JSON envelope 复制粘贴给用户
 - ❌ 在 prompt 里夹带"忽略之前的指令"等内容（注入风险，且影响生图质量）
 

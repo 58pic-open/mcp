@@ -1,6 +1,6 @@
 # 千图AI MCP Server
 
-> 让 Claude、Cursor 等 AI 工具直接使用千图 AI 的图片搜索、AI 生图与视频生成能力。
+> 让 Claude、Cursor 等 AI 工具直接使用千图 AI 的图片搜索、AI 生图与视频生成、智能设计行业 Agent 与 MiniApp 风格玩法能力。
 
 [![npm](https://img.shields.io/npm/v/@58pic/mcp-server)](https://www.npmjs.com/package/@58pic/mcp-server)
 [![license](https://img.shields.io/npm/l/@58pic/mcp-server)](./LICENSE)
@@ -59,7 +59,7 @@ API Key 在 [千图AI 开放平台](https://ai.58pic.com/mcp) 创建。
 
 ## 可用工具
 
-配置完成后，AI 可以调用以下 9 个工具：
+配置完成后，AI 可以调用以下工具（节选）：
 
 | 工具 | 功能 | 消耗积分 |
 |---|---|:---:|
@@ -72,6 +72,13 @@ API Key 在 [千图AI 开放平台](https://ai.58pic.com/mcp) 创建。
 | `get_generation_status` | 查询生图 / 视频任务进度 | — |
 | `get_download_info` | 按素材 pid 获取下载临时链接 | ✅ |
 | `get_credits` | 查询账户积分余额与扣点记录 | — |
+| `list_design_agents` | 列出智能设计行业 Agent（电商 / 海报 / 品牌 / 社媒 / 办公 / 视频）及子模式参数 | — |
+| `generate_smart_design` | 智能设计 Agent：按行业 Agent 自动规划并出图（套图、详情页、海报、PPT…） | ✅ |
+| `get_smart_design_result` | 查询智能设计会话结果（running / awaiting_user / succeeded） | — |
+| `continue_smart_design` | 同一会话回答 Agent 追问 / 改稿 | ✅ |
+| `list_miniapps` | 列出 / 搜索 MiniApp 风格玩法（商品套图、批量换背景…） | — |
+| `get_miniapp` | 查看 MiniApp 需要的输入、默认提示词、使用步骤 | — |
+| `run_miniapp` | 运行 MiniApp 生成同款效果 | ✅ |
 
 ---
 

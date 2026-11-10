@@ -1,7 +1,7 @@
 {
   "name": "58pic",
-  "description": "千图 AI 开放平台：搜素材、查模型、AI 生图（文生图/图生图/做同款）、生视频、按 PID 下载素材。通过远程 MCP（OAuth 2.1）调用，首次连接浏览器自动授权。",
-  "version": "0.1.0",
+  "description": "千图 AI 开放平台：搜素材、查模型、AI 生图（文生图/图生图/做同款）、生视频、智能设计行业 Agent（电商套图/详情页/海报/品牌/社媒/PPT）、MiniApp 风格玩法、按 PID 下载素材。通过远程 MCP（OAuth 2.1）调用，首次连接浏览器自动授权。",
+  "version": "0.2.0",
   "author": {
     "name": "千图网 (58pic)",
     "url": "https://ai.58pic.com/mcp"
@@ -19,6 +19,8 @@
     "image-to-image",
     "video-generation",
     "stock-assets",
-    "mcp"
+    "mcp",
+    "design-agent",
+    "miniapp"
   ]
 }
